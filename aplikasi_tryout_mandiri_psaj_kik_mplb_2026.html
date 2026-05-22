@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tryout Mandiri PSAJ KIK-MPLB 2026</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- Header / Navbar -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-md shadow-indigo-200">
+                    <i class="fa-solid fa-graduation-cap text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-slate-900 leading-tight">PSAJ KIK-MPLB 2026</h1>
+                    <p class="text-xs text-indigo-600 font-semibold tracking-wider uppercase">Tryout Mandiri Premium</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <div id="timer-display" class="hidden sm:flex items-center gap-2 bg-amber-50 text-amber-800 border border-amber-200 px-3.5 py-1.5 rounded-full text-sm font-semibold">
+                    <i class="fa-regular fa-clock text-amber-600 animate-pulse"></i>
+                    <span id="time-left">90:00</span>
+                </div>
+                <button id="end-exam-btn" class="bg-rose-600 hover:bg-rose-700 text-white font-semibold text-sm px-4 py-2 rounded-xl transition duration-200 shadow-sm flex items-center gap-2">
+                    <i class="fa-solid fa-flag-checkered"></i> Akhiri Ujian
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Layout -->
+    <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 flex flex-col lg:flex-row gap-6">
+        
+        <!-- Left Column: Question Area -->
+        <section class="flex-grow lg:w-2/3 flex flex-col gap-5">
+            <!-- Progress Bar Card -->
+            <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="w-full sm:w-auto">
+                    <span class="text-sm font-medium text-slate-500">Progres Pengerjaan</span>
+                    <div class="flex items-baseline gap-1.5 mt-0.5">
+                        <span id="answered-count" class="text-2xl font-bold text-slate-900">0</span>
+                        <span class="text-slate-400">/</span>
+                        <span class="text-slate-600 font-medium">50 Soal Terjawab</span>
+                    </div>
+                </div>
+                <div class="w-full sm:flex-grow max-w-md bg-slate-100 rounded-full h-3 overflow-hidden">
+                    <div id="progress-bar-fill" class="bg-indigo-600 h-full w-0 transition-all duration-300 rounded-full"></div>
+                </div>
+                <div class="text-right hidden sm:block">
+                    <span class="text-sm font-bold text-indigo-600" id="progress-percentage">0%</span>
+                </div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm flex-grow flex flex-col justify-between min-h-[420px]">
+                <div>
+                    <!-- Question Header Info -->
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-5">
+                        <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-lg uppercase tracking-wider" id="question-indicator">Soal Nomor 1</span>
+                        <span class="text-xs font-semibold text-slate-400 flex items-center gap-1.5">
+                            <i class="fa-solid fa-brain"></i> Tingkat Kognitif L3 (Penalaran)
+                        </span>
+                    </div>
+
+                    <!-- Question Text -->
+                    <p class="text-base sm:text-lg font-semibold text-slate-900 leading-relaxed mb-6" id="question-text">
+                        Memuat butir pertanyaan...
+                    </p>
+
+                    <!-- Answer Options Stack -->
+                    <div class="space-y-3.5" id="options-container">
+                        <!-- Options injected dynamically by JS -->
+                    </div>
+                </div>
+
+                <!-- Navigation Controls -->
+                <div class="flex items-center justify-between pt-6 border-t border-slate-100 mt-8">
+                    <button id="prev-btn" class="flex items-center gap-2 border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold px-4.5 py-2.5 rounded-xl transition duration-150 disabled:opacity-40 disabled:hover:bg-transparent">
+                        <i class="fa-solid fa-arrow-left text-sm"></i> Sebelumnya
+                    </button>
+                    
+                    <button id="flag-btn" class="flex items-center justify-center gap-2 border border-amber-200 bg-amber-50/50 hover:bg-amber-50 text-amber-700 font-semibold px-4 py-2.5 rounded-xl transition duration-150 text-sm">
+                        <i class="fa-regular fa-bookmark"></i> Tandai Ragu
+                    </button>
+
+                    <button id="next-btn" class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-5 py-2.5 rounded-xl transition duration-150 disabled:opacity-40 shadow-sm shadow-indigo-100">
+                        Berikutnya <i class="fa-solid fa-arrow-right text-sm"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Column: Navigation Grid -->
+        <aside class="lg:w-1/3 flex flex-col gap-5">
+            <!-- Sidebar Card -->
+            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-col h-full max-h-[580px]">
+                <h3 class="font-bold text-slate-900 text-base mb-3.5 flex items-center gap-2">
+                    <i class="fa-solid fa-grip text-indigo-500"></i> Peta Navigasi Soal
+                </h3>
+                
+                <div class="flex items-center gap-4 text-xs font-semibold text-slate-500 border-b border-slate-100 pb-3 mb-4">
+                    <div class="flex items-center gap-1.5">
+                        <span class="w-3.5 h-3.5 bg-indigo-600 rounded-md"></span> Terjawab
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <span class="w-3.5 h-3.5 bg-amber-400 rounded-md"></span> Ragu-Ragu
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <span class="w-3.5 h-3.5 bg-slate-100 border border-slate-200 rounded-md"></span> Belum
+                    </div>
+                </div>
+
+                <!-- Scrollable Grid Area -->
+                <div class="flex-grow overflow-y-auto custom-scrollbar pr-1">
+                    <div class="grid grid-cols-5 sm:grid-cols-10 lg:grid-cols-5 gap-2.5" id="nav-grid">
+                        <!-- Buttons injected dynamically by JS -->
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-4 mt-8">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-400">
+            &copy; 2026 SMK Negeri 2 Semarang. Hak Cipta Dilindungi Undang-Undang.
+        </div>
+    </footer>
+
+    <!-- Result Modal (Overlay) -->
+    <div id="result-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 border border-slate-100 shadow-2xl overflow-y-auto max-h-[90vh] custom-scrollbar animate-in fade-in zoom-in duration-200">
+            <div class="text-center pb-5 border-b border-slate-100">
+                <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-3xl mb-4">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <h2 class="text-2xl font-extrabold text-slate-900">Ujian Telah Selesai!</h2>
+                <p class="text-sm text-slate-500 mt-1">Berikut adalah hasil evaluasi pengerjaan Tryout KIK-MPLB Anda.</p>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 py-6">
+                <div class="bg-slate-50 p-4 rounded-2xl text-center border border-slate-100">
+                    <span class="text-xs text-slate-400 font-semibold block uppercase">Skor Ujian</span>
+                    <span class="text-3xl font-extrabold text-indigo-600" id="modal-score">0</span>
+                    <span class="text-xs text-slate-400 block mt-0.5">Skala 100</span>
+                </div>
+                <div class="bg-emerald-50/50 p-4 rounded-2xl text-center border border-emerald-100/50">
+                    <span class="text-xs text-emerald-600 font-semibold block uppercase">Benar</span>
+                    <span class="text-3xl font-extrabold text-emerald-600" id="modal-correct">0</span>
+                    <span class="text-xs text-slate-400 block mt-0.5">Soal</span>
+                </div>
+                <div class="bg-rose-50/50 p-4 rounded-2xl text-center border border-rose-100/50">
+                    <span class="text-xs text-rose-600 font-semibold block uppercase">Salah</span>
+                    <span class="text-3xl font-extrabold text-rose-600" id="modal-wrong">0</span>
+                    <span class="text-xs text-slate-400 block mt-0.5">Soal</span>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-2xl text-center border border-slate-100">
+                    <span class="text-xs text-slate-400 font-semibold block uppercase">Terlewat</span>
+                    <span class="text-3xl font-extrabold text-slate-600" id="modal-skipped">0</span>
+                    <span class="text-xs text-slate-400 block mt-0.5">Soal</span>
+                </div>
+            </div>
+
+            <!-- Review Section -->
+            <div class="border-t border-slate-100 pt-5">
+                <h3 class="font-bold text-slate-900 text-base mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-list-check text-indigo-600"></i> Review Kunci Jawaban & Pembahasan
+                </h3>
+                <div id="review-container" class="space-y-4 max-h-[250px] overflow-y-auto custom-scrollbar pr-1">
+                    <!-- Dynamic review items injected here -->
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row gap-3 pt-6 border-t border-slate-100 mt-6">
+                <button onclick="restartExam()" class="flex-grow bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-2xl transition duration-150 shadow-sm flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-rotate-left"></i> Ulangi Tryout
+                </button>
+                <button onclick="window.print()" class="border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold py-3 px-6 rounded-2xl transition duration-150 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-print"></i> Cetak Hasil
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Submit Modal -->
+    <div id="confirm-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 border border-slate-100 shadow-2xl text-center">
+            <div class="w-14 h-14 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto text-2xl mb-4">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900">Selesaikan Ujian Sekarang?</h3>
+            <p class="text-sm text-slate-500 mt-1.5" id="confirm-modal-desc">Pastikan semua jawaban Anda telah ditinjau kembali dengan teliti.</p>
+            <div class="flex gap-3 mt-6">
+                <button id="cancel-submit" class="flex-1 border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold py-3 rounded-2xl transition duration-150">
+                    Batal
+                </button>
+                <button id="confirm-submit" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-2xl transition duration-150">
+                    Selesai & Kirim
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Script Data & Application Logic -->
+    <script>
+        // Database 50 Soal Tryout Lengkap
+        const questions = [
+            {
+                id: 1,
+                question: "Seorang pemilik UMKM di bidang konveksi rumahan menghadapi lonjakan harga bahan baku sebesar 30%. Dibandingkan menutup usaha atau langsung menaikkan harga jual secara drastis yang berisiko mengusir pelanggan, ia memilih mendesain ulang sisa kain perca menjadi produk aksesoris bernilai jual tinggi. Sikap wirausaha yang paling menonjol pada narasi di atas adalah...",
+                options: [
+                    "Berorientasi pada solusi dan adaptif terhadap perubahan pasar",
+                    "Mengutamakan keuntungan jangka pendek tanpa menghiraukan risiko",
+                    "Pasrah terhadap keadaan ekonomi dan regulasi pemerintah",
+                    "Ketergantungan yang tinggi pada bantuan modal eksternal"
+                ],
+                correct: 0,
+                rationale: "Wirausaha yang sukses tidak menyerah pada krisis bahan baku, melainkan mencari alternatif kreatif untuk mempertahankan pendapatan usaha."
+            },
+            {
+                id: 2,
+                question: "Sebuah perusahaan jasa penataan arsip fisik (MPLB) mengalami penurunan omzet karena banyak klien beralih ke penyimpanan digital. Langkah inovatif apa yang paling tepat diambil oleh pimpinan perusahaan jasa tersebut?",
+                options: [
+                    "Membuka layanan baru berupa jasa digitalisasi dokumen dan manajemen arsip berbasis cloud",
+                    "Menaikkan biaya layanan arsip fisik demi menutup kerugian operasional",
+                    "Melakukan PHK massal kepada semua kurir arsip fisik tanpa rencana baru",
+                    "Membeli gudang penyimpanan fisik baru yang lebih luas"
+                ],
+                correct: 0,
+                rationale: "Inovasi layanan harus menjawab pergeseran kebutuhan pasar agar bisnis tetap relevan dan kompetitif."
+            },
+            {
+                id: 3,
+                question: "Perusahaan layanan administrasi kantor konvensional sering mengalami keterlambatan dalam pengiriman laporan bulanan ke klien karena proses rekapitulasi manual. Solusi kreatif berbasis teknologi yang paling efektif untuk masalah ini adalah...",
+                options: [
+                    "Mengimplementasikan sistem dashboard otomatisasi berbasis cloud yang terintegrasi",
+                    "Membeli mesin fotokopi berkecepatan tinggi di setiap divisi",
+                    "Menambah jam lembur karyawan untuk entri data manual",
+                    "Mengganti kurir pengirim dokumen fisik dengan ojek online"
+                ],
+                correct: 0,
+                rationale: "Dashboard otomatisasi memangkas waktu kerja manual dan menyajikan data secara real-time ke klien."
+            },
+            {
+                id: 4,
+                question: "Sebuah usaha penjualan ATK dan jasa penggandaan dokumen ingin menerapkan pendekatan inovatif dalam penjualan produknya agar dapat bersaing dengan e-commerce. Inovasi layanan penjualan yang paling tepat adalah...",
+                options: [
+                    "Menyediakan platform pemesanan online dengan layanan antar gratis khusus area perkantoran sekitar",
+                    "Menutup toko fisik sepenuhnya dan menjual melalui media sosial saja",
+                    "Memberikan diskon besar-besaran untuk produk yang sudah kedaluwarsa",
+                    "Mengurangi variasi jenis produk ATK yang dijual di toko"
+                ],
+                correct: 0,
+                rationale: "Pendekatan inovatif penjualan harus memberi kemudahan akses bagi segmen pasar utamanya, yaitu area perkantoran."
+            },
+            {
+                id: 5,
+                question: "Dalam analisis SWOT perusahaan startup penyedia jasa Virtual Assistant, masuknya raksasa teknologi global yang meluncurkan alat bantu administrasi berbasis Artificial Intelligence (AI) gratis dikategorikan sebagai...",
+                options: [
+                    "Threats (Ancaman)",
+                    "Strengths (Kekuatan)",
+                    "Weaknesses (Kelemahan)",
+                    "Opportunities (Peluang)"
+                ],
+                correct: 0,
+                rationale: "Faktor eksternal yang dapat mengancam kelangsungan hidup atau pangsa pasar produk jasa kita disebut sebagai ancaman."
+            },
+            {
+                id: 6,
+                question: "Sebuah tim wirausaha MPLB mengembangkan aplikasi rapat online baru. Sebelum melepasnya secara komersial ke pasar luas, mereka mengundang 50 sekretaris eksekutif untuk menggunakan aplikasi tersebut secara gratis selama satu bulan demi mendapatkan masukan bug. Tahap kewirausahaan ini disebut...",
+                options: [
+                    "Tahap uji coba produk (Beta Testing / Prototyping)",
+                    "Tahap ekspansi pasar berskala besar",
+                    "Tahap likuidasi aset perusahaan",
+                    "Tahap penyusunan laporan keuangan tahunan"
+                ],
+                correct: 0,
+                rationale: "Menguji fungsi produk pada sampel pengguna terbatas bertujuan memvalidasi performa dan memperbaiki galat sebelum peluncuran komersial."
+            },
+            {
+                id: 7,
+                question: "Dalam Business Model Canvas (BMC) untuk agensi Event Organizer (EO) korporat, janji layanan berupa \"Penyusunan laporan pertanggungjawaban kegiatan selesai maksimal 1x24 jam setelah acara\" termasuk dalam elemen...",
+                options: [
+                    "Value Propositions",
+                    "Customer Segments",
+                    "Key Resource",
+                    "Cost Structure"
+                ],
+                correct: 0,
+                rationale: "Value Proposition merujuk pada nilai unik atau keunggulan komparatif yang ditawarkan untuk menyelesaikan masalah konsumen."
+            },
+            {
+                id: 8,
+                question: "Seorang lulusan MPLB menciptakan sebuah e-book berisi panduan otomatisasi administrasi perkantoran menggunakan rumus makro excel buatan sendiri. Hak atas kekayaan intelektual (HAKI) yang paling tepat untuk melindungi karya tulis digital tersebut adalah...",
+                options: [
+                    "Hak Cipta",
+                    "Paten",
+                    "Merek Dagang",
+                    "Desain Industri"
+                ],
+                correct: 0,
+                rationale: "Hak Cipta otomatis melekat untuk melindungi ciptaan di bidang ilmu pengetahuan, seni, dan sastra, termasuk buku dan karya tulis digital."
+            },
+            {
+                id: 9,
+                question: "Manakah di bawah ini yang merupakan contoh nyata dari inovasi proses dalam lingkup layanan bisnis administrasi perkantoran?",
+                options: [
+                    "Mengubah alur persetujuan surat dinas manual yang awalnya membutuhkan 5 tanda tangan fisik menjadi sistem persetujuan digital satu klik via aplikasi internal",
+                    "Membuat kemasan kertas pembungkus dokumen dengan warna yang lebih terang",
+                    "Menaikkan tarif jasa pengetikan dokumen per halaman",
+                    "Membuka cabang kantor operasional baru di luar kota"
+                ],
+                correct: 0,
+                rationale: "Inovasi proses berkaitan dengan efisiensi rekayasa cara kerja atau metode operasional internal perusahaan."
+            },
+            {
+                id: 10,
+                question: "Dalam analisis kelayakan usaha jasa pengetikan dan cetak cepat, manakah komponen biaya variabel yang fluktuasinya paling memengaruhi margin keuntungan bulanan jika volume orderan naik turun drastis?",
+                options: [
+                    "Kertas, tinta printer, dan token listrik operasional mesin",
+                    "Biaya sewa ruko tahunan kantor",
+                    "Gaji pokok bulanan manajer operasional",
+                    "Pajak Bumi dan Bangunan (PBB) lokasi usaha"
+                ],
+                correct: 0,
+                rationale: "Biaya variabel adalah biaya yang besarnya berubah berbanding lurus dengan jumlah kuantitas produk/jasa yang diproduksi."
+            },
+            {
+                id: 11,
+                question: "Pasar jasa Virtual Assistant umum sudah sangat padat dan memicu perang harga. Sebuah agensi baru memutuskan fokus hanya menyediakan Virtual Assistant medis yang paham istilah kedokteran untuk mengelola jadwal praktik dokter. Strategi pasar yang diterapkan adalah...",
+                options: [
+                    "Strategi fokus ceruk pasar baru (Niche Market)",
+                    "Strategi kepemimpinan harga murah ekstrim",
+                    "Strategi pemasaran massal tanpa diferensiasi",
+                    "Strategi meniru seluruh layanan kompetitor utama"
+                ],
+                correct: 0,
+                rationale: "Fokus pada segmen konsumen yang sangat spesifik membantu usaha baru menghindari persaingan ketat di pasar massal."
+            },
+            {
+                id: 12,
+                question: "Sebagai wirausaha baru di bidang EO, cara mengelola risiko persaingan usaha yang terukur saat kompetitor besar menurunkan harga secara agresif adalah...",
+                options: [
+                    "Meningkatkan kualitas layanan jaminan kepuasan (service ganti rugi) dan mempertahankan harga rasional",
+                    "Ikut menurunkan harga di bawah biaya modal agar kompetitor bangkrut",
+                    "Menjelek-jelekkan reputasi kompetitor di media sosial secara anonim",
+                    "Menghentikan semua aktivitas promosi dan menunggu kompetitor menaikkan harga kembali"
+                ],
+                correct: 0,
+                rationale: "Melawan perang harga dengan kualitas dan jaminan keamanan lebih terukur dibanding ikut memotong harga hingga merugi."
+            },
+            {
+                id: 13,
+                question: "Saat menyusun proposal usaha jasa administrasi perkantoran untuk menarik minat investor, aspek kebahasaan apa yang paling krusial untuk digunakan?",
+                options: [
+                    "Bahasa yang persuasif, lugas, profesional, serta didukung data estimasi finansial yang realistis",
+                    "Bahasa puitis yang penuh kiasan emosional yang panjang",
+                    "Bahasa gaul populer yang sering digunakan di media sosial remaja",
+                    "Bahasa teknis pemrograman tingkat tinggi tanpa penjelasan arti"
+                ],
+                correct: 0,
+                rationale: "Investor membutuhkan bahasa yang jelas, meyakinkan secara bisnis, profesional, dan berbasis data keuangan yang konkret."
+            },
+            {
+                id: 14,
+                question: "Melalui metode pemikiran divergen, fungsi penjepit kertas (paper clip) di lingkungan kantor MPLB dapat dikembangkan secara kreatif menjadi hal berikut, kecuali...",
+                options: [
+                    "Alat konverter tegangan tinggi listrik printer",
+                    "Alat darurat untuk membuka slot kartu SIM ponsel operasional kantor",
+                    "Penanda halaman darurat pada buku agenda yang tebal",
+                    "Pemberi sekat sela-sela keyboard dari debu komputer"
+                ],
+                correct: 0,
+                rationale: "Pemikiran divergen mencari banyak alternatif fungsi yang logis dan aman. Penjepit kecil tidak dirancang untuk aliran listrik tegangan tinggi."
+            },
+            {
+                id: 15,
+                question: "Sebuah aplikasi layanan pelanggan (CRM) baru dirancang untuk staf administrasi. Berdasarkan prinsip User Experience (UX) yang inovatif, hal terpenting dalam desain antarmukanya adalah...",
+                options: [
+                    "Navigasi intuitif yang meminimalkan jumlah klik staf dalam memasukkan keluhan pelanggan",
+                    "Penempatan animasi pembuka berdurasi lama yang penuh warna cerah",
+                    "Penggunaan jenis huruf gotik klasik berukuran kecil agar terlihat estetik",
+                    "Menyembunyikan tombol simpan utama di dalam menu pengaturan terdalam"
+                ],
+                correct: 0,
+                rationale: "UX yang baik mengutamakan kemudahan, kecepatan, dan kenyamanan pengguna saat menyelesaikan tugas di aplikasi."
+            },
+            {
+                id: 16,
+                question: "Seorang pelanggan marah besar di ruang tunggu kantor karena dokumen perjanjiannya salah cetak oleh staf administrasi. Sikap penanganan komplain yang paling tepat dan profesional adalah...",
+                options: [
+                    "Mendengarkan dengan penuh empati tanpa menyela, meminta maaf, dan segera mencetak ulang dokumen dengan benar saat itu juga",
+                    "Menjelaskan bahwa kesalahan tersebut adalah salah mesin printer agar perusahaan tidak disalahkan",
+                    "Meminta pelanggan pulang dan membuat janji temu ulang minggu depan",
+                    "Membalas dengan nada tinggi karena pelanggan dianggap tidak sopan berteriak"
+                ],
+                correct: 0,
+                rationale: "Penanganan komplain yang baik meliputi validasi emosi pelanggan, pengakuan kesalahan, serta solusi tindakan yang cepat."
+            },
+            {
+                id: 17,
+                question: "Agensi layanan translasi dokumen bisnis sering menerima komplain karena hasil terjemahan istilah hukum tidak akurat. Untuk menghindari kegagalan produk jasa ini secara sistemik, tindakan apa yang harus dilakukan?",
+                options: [
+                    "Menyusun SOP pengecekan berlapis oleh editor ahli hukum sebelum dokumen dikirim ke klien",
+                    "Menggunakan software penerjemah gratisan tanpa diperiksa ulang lagi",
+                    "Membayar kompensasi uang damai kepada klien tanpa memperbaiki kualitas terjemahan",
+                    "Menolak pesanan dokumen hukum dan hanya menerima surat umum"
+                ],
+                correct: 0,
+                rationale: "Penerapan kendali mutu (quality control) berbasis SOP berlapis mencegah kesalahan hasil kerja lolos ke tangan konsumen."
+            },
+            {
+                id: 18,
+                question: "Sebuah bisnis Event Organizer (EO) berskala kecil bersaing dengan agensi besar. Keunggulan kompetitif apa yang bisa ditawarkan oleh EO kecil tersebut untuk menarik minat klien korporat lokal?",
+                options: [
+                    "Layanan yang sangat personal, fleksibilitas perubahan konsep di menit-menit terakhir, dan respons komunikasi yang sangat cepat",
+                    "Menjamin kehadiran artis internasional papan atas dengan harga termurah",
+                    "Memiliki gedung pertemuan sendiri di setiap kota besar di Indonesia",
+                    "Menurunkan jumlah staf lapangan hingga seminimal mungkin saat acara berlangsung"
+                ],
+                correct: 0,
+                rationale: "Perusahaan kecil unggul dalam kelincahan birokrasi dan pendekatan personal yang intensif dibandingkan korporasi besar yang kaku."
+            },
+            {
+                id: 19,
+                question: "Pemerintah menerapkan sistem OSS (Online Single Submission) untuk pengurusan izin usaha. Keterampilan praktis apa yang harus dikuasai oleh seorang lulusan MPLB agar dapat membantu para wirausaha pemula dalam aspek legalitas ini?",
+                options: [
+                    "Kemampuan memahami klasifikasi baku lapangan usaha (KBLI) dan menavigasi portal digital registrasi izin usaha",
+                    "Keahlian melakukan audit laporan keuangan korporasi multinasional",
+                    "Keterampilan meretas sistem keamanan server dinas perizinan",
+                    "Kemampuan membuat desain arsitektur interior kantor minimalis"
+                ],
+                correct: 0,
+                rationale: "Lulusan MPLB harus menguasai tata kelola administrasi digital, termasuk pengisian data legalitas dan penentuan kode bidang usaha."
+            },
+            {
+                id: 20,
+                question: "Seorang Virtual Assistant (VA) yang kreatif mendapatkan tugas untuk mengelola akun media sosial bisnis milik kliennya yang mulai sepi interaksi. Kompetensi kreatif apa yang paling ia butuhkan?",
+                options: [
+                    "Kemampuan menyusun strategi konten interaktif (polling, q&a) dan desain visual tren mikro yang relevan",
+                    "Keahlian mengetik cepat 100 kata per menit di Microsoft Word",
+                    "Kemampuan menghitung pajak penghasilan badan tahunan klien",
+                    "Keterampilan mengarsipkan dokumen fisik ke dalam lemari besi"
+                ],
+                correct: 0,
+                rationale: "Kreativitas VA di media sosial diukur dari kemampuannya menghidupkan engagement penonton melalui materi konten inovatif."
+            },
+            {
+                id: 21,
+                question: "Sebuah kemitraan wirausaha jasa kurir dokumen internal ingin meresmikan usaha mereka agar dapat memenangkan tender dari bank BUMN. Langkah hukum awal yang paling tepat dan sah secara regulasi adalah...",
+                options: [
+                    "Mendirikan badan hukum resmi (seperti PT atau CV) dan mengurus Nomor Induk Berusaha (NIB) lewat OSS",
+                    "Membuat surat perjanjian di atas kertas biasa tanpa saksi dan stempel",
+                    "Membayar biaya jaminan langsung ke rekening pribadi direktur bank terkait",
+                    "Menggunakan nama perusahaan orang lain secara sepihak tanpa izin tertulis"
+                ],
+                correct: 0,
+                rationale: "Instansi besar seperti BUMN mewajibkan vendor mereka memiliki legalitas hukum bisnis yang jelas dan terdaftar resmi di negara."
+            },
+            {
+                id: 22,
+                question: "Manakah kelompok pengeluaran di bawah ini yang seluruhnya dikategorikan sebagai komponen biaya variabel pada usaha jasa pembuatan hampers dan hantaran pernikahan korporat?",
+                options: [
+                    "Kotak anyaman, pita hiasan, isi hampers, dan ongkos kirim kurir per alamat",
+                    "Sewa gedung galeri, biaya wi-fi bulanan, dan penyusutan laptop",
+                    "Gaji tetap supervisor operasional dan premi asuransi kebakaran",
+                    "Biaya pembuatan badan hukum PT di awal pendirian usaha"
+                ],
+                correct: 0,
+                rationale: "Semua komponen tersebut habis atau bertambah biayanya seiring bertambahnya jumlah unit hampers yang dipesan."
+            },
+            {
+                id: 23,
+                question: "Sebuah usaha studio foto kelulusan memiliki biaya tetap Rp 5.000.000 per bulan. Biaya variabel per paket foto adalah Rp 50.000. Jika harga jual per paket foto disepakati Rp 150.000, berapakah jumlah paket foto yang harus terjual agar mencapai Break-Even Point (BEP)?",
+                options: [
+                    "50 paket foto",
+                    "100 paket foto",
+                    "35 paket foto",
+                    "200 paket foto"
+                ],
+                correct: 0,
+                rationale: "Rumus BEP unit = Biaya Tetap / (Harga Jual - Biaya Variabel) = 5.000.000 / (150.000 - 50.000) = 5.000.000 / 100.000 = 50 unit."
+            },
+            {
+                id: 24,
+                question: "Persaingan bisnis ruang kerja bersama (co-working space) sangat ketat. Inovasi layanan jasa apa yang paling menarik bagi komunitas startup digital perkantoran saat ini?",
+                options: [
+                    "Penyediaan pod kedap suara khusus untuk panggilan rapat video (zoom pod) serta akses studio podcast gratis bagi member harian",
+                    "Menyediakan mesin ketik manual model jadul di setiap meja kerja",
+                    "Melarang penggunaan koneksi internet nirkabel (Wi-Fi) di dalam ruangan",
+                    "Mewajibkan semua pengunjung mengenakan pakaian seragam formal kaku"
+                ],
+                correct: 0,
+                rationale: "Menjawab kebutuhan tren kerja jarak jauh modern yang membutuhkan privasi audio saat melakukan meeting online."
+            },
+            {
+                id: 25,
+                question: "Sebuah usaha agensi penyedia tenaga administrasi sekuriti perkantoran ingin memasarkan jasanya secara digital ke perusahaan-perusahaan besar (B2B). Platform media atau promosi digital mana yang paling efektif dan tepat sasaran?",
+                options: [
+                    "Membuat profil bisnis profesional yang aktif dan berjejaring di LinkedIn serta mengirim proposal digital via email resmi",
+                    "Membuat video dance hiburan berdurasi singkat tanpa teks penjelasan di TikTok pribadi",
+                    "Menyebarkan brosur cetak di perempatan jalan raya lampu merah",
+                    "Memasang iklan baris singkat di koran cetak daerah"
+                ],
+                correct: 0,
+                rationale: "LinkedIn adalah jejaring profesional tempat para pengambil keputusan (HRD, Direktur) berkumpul, sangat cocok untuk pemasaran model B2B."
+            },
+            {
+                id: 26,
+                question: "Melihat siklus hidup produk bisnis warung internet (warnet) game tradisional yang berada pada tahap penurunan (decline) karena maraknya smartphone, strategi bertahan apa yang paling inovatif bagi pemilik usaha tersebut?",
+                options: [
+                    "Mentransformasi warnet menjadi arena e-sports terintegrasi dengan kafe kekinian dan akademi turnamen lokal",
+                    "Mempertahankan kondisi komputer lama tanpa servis dan menaikkan tarif per jam",
+                    "Menambah jumlah bilik sekat kayu tertutup rapat tanpa sirkulasi udara",
+                    "Berdoa tanpa melakukan perubahan operasional atau inovasi apa pun"
+                ],
+                correct: 0,
+                rationale: "Melakukan reposisi produk/jasa ke arah komunitas khusus dan gaya hidup baru membantu menyelamatkan bisnis dari kematian industri."
+            },
+            {
+                id: 27,
+                question: "Saat melayani pelanggan yang sedang panik karena kehilangan data laporan keuangan akibat sistem komputer kantor pusat eror, aplikasi pelaporan keluhan harus memfasilitasi staf untuk menunjukkan sikap empati. Bentuk analisis sikap empati dalam sistem tersebut adalah...",
+                options: [
+                    "Menyediakan template balasan otomatis yang tulus mengenali kepanikan pelanggan, memberikan nomor tiket darurat, serta kepastian timeline investigasi segera",
+                    "Mengirimkan pesan bot otomatis yang menyalahkan kecerobohan user karena tidak mencadangkan data pribadi",
+                    "Mengabaikan tiket laporan tersebut hingga keesokan harinya agar pelanggan tenang dengan sendirinya",
+                    "Mengirimkan iklan pop-up penawaran produk asuransi jiwa berbayar"
+                ],
+                correct: 0,
+                rationale: "Empati digital diwujudkan dengan pengakuan atas masalah pelanggan, penenangan, dan langkah penanganan konkret."
+            },
+            {
+                id: 28,
+                question: "Sebuah usaha jasa pengelolaan dokumen administrasi menerapkan konsep bauran pemasaran (Marketing Mix 7P). Elemen Process (Proses) yang paling krusial untuk dievaluasi agar menjamin kenyamanan klien adalah...",
+                options: [
+                    "Kejelasan dan kecepatan alur tracking dokumen dari mulai diserahkan, diproses, hingga selesai diantar kembali ke klien",
+                    "Desain arsitektur gedung kantor pusat tempat direktur bekerja",
+                    "Variasi warna seragam yang dikenakan staf resepsionis kantor",
+                    "Besaran persentase diskon akhir tahun yang dimuat di brosur"
+                ],
+                correct: 0,
+                rationale: "Dalam bisnis jasa, elemen 'Process' mengatur bagaimana alur pengantaran layanan dilakukan dengan transparan dan efisien hingga ke konsumen."
+            },
+            {
+                id: 29,
+                question: "Sebuah bisnis start-up menawarkan jasa pembuatan Curriculum Vitae (CV) profesional secara online. Manakah yang termasuk elemen Physical Evidence (Bukti Fisik/Tampilan) digital yang paling meyakinkan bagi calon konsumen?",
+                options: [
+                    "Portofolio contoh desain CV tiruan yang rapi, tampilan situs web resmi yang elegan, dan sertifikat testimoni asli dari para pelamar kerja yang lolos",
+                    "Buku catatan akuntansi internal yang disimpan rapat di laci meja admin",
+                    "Gaji bulanan yang ditransfer ke rekening para desainer CV",
+                    "Struktur organisasi kepengurusan perusahaan yang rumit"
+                ],
+                correct: 0,
+                rationale: "Bagi bisnis jasa digital, physical evidence diwujudkan melalui bukti visual digital seperti UI website, portofolio karya, dan kredibilitas ulasan."
+            },
+            {
+                id: 30,
+                question: "Anda menawarkan jasa pembuatan sistem database arsip digital kepada sebuah institusi sekolah. Taktik penawaran (pitching) mana yang paling meyakinkan bagi kepala sekolah?",
+                options: [
+                    "Mendemonstrasikan langsung prototipe sistem database yang mampu mencari data murid dalam waktu kurang dari 3 detik dibanding pencarian manual yang butuh 30 menit",
+                    "Membacakan teori definisi database dari buku teks setebal 200 halaman tanpa demo",
+                    "Menjanjikan bahwa sistem tidak akan pernah error selamanya tanpa memberi rincian teknis",
+                    "Memberikan potongan harga 90% tetapi dengan sistem database yang sering macet"
+                ],
+                correct: 0,
+                rationale: "Pitching terbaik dalam bisnis jasa teknologi adalah menunjukkan bukti nyata efisiensi performa (kontras solusi) secara langsung."
+            },
+            {
+                id: 31,
+                question: "Dalam kriteria peluncuran inovasi produk layanan kantor, terdapat aspek viability. Makna dari analisis viability yang tepat adalah...",
+                options: [
+                    "Kelayakan bisnis tersebut untuk menghasilkan keuntungan finansial jangka panjang secara mandiri dan berkelanjutan",
+                    "Keindahan kombinasi estetika warna logo perusahaan saat dicetak",
+                    "Kemampuan produk untuk ditiru oleh kompetitor dalam waktu satu hari",
+                    "Jumlah total komputer rusak yang ada di gudang penyimpanan"
+                ],
+                correct: 0,
+                rationale: "Viability mengukur apakah sebuah model bisnis mampu bertahan hidup secara ekonomi dan menghasilkan profit finansial kontinu."
+            },
+            {
+                id: 32,
+                question: "Sebuah perusahaan administrasi melakukan inovasi inkremental (incremental innovation) pada sistem pengolah kata yang mereka gunakan sehari-hari. Contoh tindakan yang mencerminkan jenis inovasi ini adalah...",
+                options: [
+                    "Menambahkan fitur shortcut otomatis kustom untuk mempercepat pengetikan format surat resmi yang sudah ada sebelumnya",
+                    "Membuang seluruh komputer kantor dan menggantinya dengan sistem telepati pikiran masa depan",
+                    "Menghentikan penggunaan software pengolah kata dan kembali memakai kuas tinta di kain",
+                    "Membiarkan software tanpa pembaruan (update) berkala selama sepuluh tahun"
+                ],
+                correct: 0,
+                rationale: "Inovasi inkremental adalah perbaikan atau pengembangan kecil secara bertahap pada produk/sistem yang sudah ada demi efisiensi."
+            },
+            {
+                id: 33,
+                question: "Sebuah Event Organizer (EO) ditunjuk mengelola peluncuran produk di area terbuka (outdoor). Mengingat ramalan cuaca menunjukkan potensi hujan badai, langkah mitigasi risiko operasional yang paling tepat adalah...",
+                options: [
+                    "Menyiapkan tenda sarnavil tahan air cadangan berkubah kokoh dan genset backup listrik yang diletakkan di area aman banjir",
+                    "Melanjutkan acara tanpa tenda pelindung dan berharap hujan tidak jadi turun",
+                    "Mematikan acara sepihak di hari-H tanpa memberitahu klien terlebih dahulu",
+                    "Menuntut pawang hujan secara hukum jika ada satu tetes air jatuh"
+                ],
+                correct: 0,
+                rationale: "Mitigasi risiko operasional mengharuskan persiapan rencana cadangan fisik nyata untuk mengantisipasi potensi kegagalan teknis akibat faktor alam."
+            },
+            {
+                id: 34,
+                question: "Analisis struktur Standar Operasional Prosedur (SOP) pengelolaan surat masuk kantor yang baik dan benar harus mencakup hal berikut, yaitu...",
+                options: [
+                    "Alur langkah kerja yang logis, penanggung jawab yang jelas di setiap tahapan, disertai batasan waktu penyelesaian tindakan",
+                    "Curahan hati keluh kesah karyawan mengenai beratnya beban kerja harian",
+                    "Kumpulan foto-foto liburan keluarga para jajaran direksi perusahaan",
+                    "Instruksi yang multitafsir agar karyawan bisa bekerja bebas tanpa aturan"
+                ],
+                correct: 0,
+                rationale: "SOP yang efektif wajib memiliki kejelasan instruksi (siapa melakukan apa, bagaimana caranya, dan berapa lama durasinya) demi konsistensi mutu."
+            },
+            {
+                id: 35,
+                question: "Berbeda dengan produk fisik, kemasan untuk produk layanan jasa (seperti agensi Virtual Assistant) diwujudkan dalam bentuk kreativitas...",
+                options: [
+                    "Bundling paket layanan yang dikelompokkan menarik (misal: Paket Pemula, Paket Eksekutif) dilengkapi panduan onboard yang estetik",
+                    "Kotak kardus tebal berlapis plastik gelembung pembungkus udara",
+                    "Botol kaca dengan label stiker hologram tiga dimensi",
+                    "Segel plastik penutup pada ujung kabel jaringan lan kantor"
+                ],
+                correct: 0,
+                rationale: "Kemasan produk jasa berupa cara pembungkusan manfaat layanan, harga, estetika proposal, dan kemudahan penyajian paket kepada konsumen."
+            },
+            {
+                id: 36,
+                question: "Seorang wirausaha MPLB ingin meluncurkan ide bisnis yang out of the box di bidang pengelolaan limbah kertas perkantoran. Ide manakah yang paling mencerminkan prinsip tersebut?",
+                options: [
+                    "Mengolah kertas dokumen kedaluwarsa menjadi produk mebel interior keras bernilai seni tinggi lewat teknologi kompresi ramah lingkungan",
+                    "Membakar seluruh tumpukan kertas bekas di lapangan terbuka setiap sore hari",
+                    "Menumpuk kertas begitu saja di sudut ruangan hingga dipenuhi rayap",
+                    "Menjual kertas bekas kiloan ke pengepul tradisional dengan harga termurah"
+                ],
+                correct: 0,
+                rationale: "Ide 'out of the box' melampaui daur ulang biasa (seperti bubur kertas buku tulis), melahirkan fungsi baru yang tak terduga dan bernilai ekonomi tinggi."
+            },
+            {
+                id: 37,
+                question: "Biaya mendapatkan pelanggan baru jauh lebih mahal daripada mempertahankan yang sudah ada. Taktik paling efektif untuk mempertahankan pelanggan lama pada agensi Event Organizer adalah...",
+                options: [
+                    "Memberikan program loyalitas berupa diskon khusus tahunan bagi korporat yang rutin memesan acara, disertai laporan evaluasi dampak kepuasan pasca-event gratis",
+                    "Mengirimkan pesan spam penawaran promosi setiap jam ke nomor pribadi klien",
+                    "Menaikkan tarif harga sepihak tanpa pemberitahuan tertulis pada kontrak berikutnya",
+                    "Memaksa klien menandatangani kontrak seumur hidup di bawah ancaman denda berat"
+                ],
+                correct: 0,
+                rationale: "Memelihara hubungan baik (customer retention) dilakukan melalui apresiasi finansial reguler dan pembuktian nilai manfaat jasa yang berkelanjutan."
+            },
+            {
+                id: 38,
+                question: "Sebuah perusahaan layanan administrasi digital memanfaatkan teknologi big data untuk menganalisis perilaku preferensi klien. Batasan etis yang paling krusial untuk dipatuhi dalam penggunaan data pelanggan adalah...",
+                options: [
+                    "Menjaga kerahasiaan data sensitif, tidak menjual data ke pihak ketiga tanpa persetujuan tertulis, dan mematuhi undang-undang perlindungan data pribadi",
+                    "Menjual data nomor telepon pelanggan ke perusahaan pinjaman online demi profit tambahan",
+                    "Mempublikasikan riwayat chat komplain rahasia klien di media sosial sebagai bahan lelucon",
+                    "Menghapus seluruh sistem backup data berkala agar menghemat kapasitas memori hard disk"
+                ],
+                correct: 0,
+                rationale: "Etika data bisnis menuntut transparansi, keamanan sistem dari kebocoran, dan penghormatan penuh terhadap hak privasi pemilik data."
+            },
+            {
+                id: 39,
+                question: "Seorang wirausaha ingin mendirikan bisnis jasa penilai kelayakan dokumen finansial skala besar. Hambatan masuk (barrier to entry) yang paling dominan dalam bisnis spesifik ini adalah...",
+                options: [
+                    "Kebutuhan akan sertifikasi keahlian regulasi hukum yang ketat, reputasi tingkat kepercayaan tinggi, dan modal teknologi enkripsi data aman",
+                    "Sulitnya mencari lokasi toko fisik di area pedalaman hutan lindung",
+                    "Harga beli pulpen tinta hitam yang terlalu mahal di pasaran",
+                    "Jumlah libur nasional dalam satu tahun kalender pemerintah"
+                ],
+                correct: 0,
+                rationale: "Bisnis jasa analisis tingkat tinggi membutuhkan legalitas kompetensi resmi dari negara dan modal sistem keamanan siber yang mahal."
+            },
+            {
+                id: 40,
+                question: "Sebuah bisnis start-up penyedia jasa kurir kilat khusus dokumen perkantoran (MPLB) ingin melakukan kolaborasi strategis perluasan pasar. Mitra strategis mana yang paling ideal untuk diajak kerja sama?",
+                options: [
+                    "Asosiasi sekretaris perkantoran regional dan penyedia platform ruang kerja bersama (co-working space)",
+                    "Toko grosir penjual pakan ternak ikan lele pedesaan",
+                    "Bengkel modifikasi knalpot sepeda motor balap",
+                    "Pabrik pembuatan semen cor konstruksi bangunan besar"
+                ],
+                correct: 0,
+                rationale: "Mitra ideal adalah entitas yang ekosistem penggunanya berisi target konsumen langsung dari produk jasa yang kita tawarkan."
+            },
+            {
+                id: 41,
+                question: "Berdasarkan Business Model Canvas (BMC), jika sebuah bisnis jasa pembuatan database digital ingin agar produknya diminati konsumen di tengah maraknya aplikasi gratis, strategi elemen Value Proposition yang tepat adalah...",
+                options: [
+                    "Menawarkan keunggulan kustomisasi penuh sesuai SOP internal klien ditambah fitur enkripsi keamanan tingkat militer bebas retas",
+                    "Meniru persis tampilan software gratisan tersebut tanpa ada kelebihan fitur baru",
+                    "Menghapus menu bantuan layanan pelanggan dari sistem aplikasi",
+                    "Menaikkan biaya langganan setiap minggu secara acak tanpa peningkatan performa"
+                ],
+                correct: 0,
+                rationale: "Value proposition harus menawarkan kegunaan spesifik bernilai tinggi yang tidak mampu dipenuhi oleh aplikasi gratisan massal."
+            },
+            {
+                id: 42,
+                question: "Sebuah start-up agensi Virtual Assistant mengalami penurunan retensi klien (banyak klien tidak memperpanjang kontrak). Strategi optimalisasi pada elemen Customer Relationships dan Channels di BMC yang harus segera dijalankan adalah...",
+                options: [
+                    "Membuka saluran komunikasi evaluasi mingguan via video call (Channels) dan menyediakan manajer akun khusus personal untuk setiap klien besar (Customer Relationships)",
+                    "Menutup semua akun email pengaduan dan memutus kontak telepon kantor",
+                    "Mengirimkan tagihan biaya tambahan misterius secara otomatis tanpa penjelasan logis",
+                    "Fokus menghabiskan anggaran untuk memasang iklan baliho di jalan tol tanpa membenahi layanan internal"
+                ],
+                correct: 0,
+                rationale: "Memperbaiki relasi menuntut komunikasi dua arah yang intensif (channels) dan penanganan personal yang berdedikasi tinggi (relationships)."
+            },
+            {
+                id: 43,
+                question: "Dalam operasional sebuah agensi Event Organizer, elemen Key Activities (Aktivitas Utama) berupa 'Pengecekan akhir kelaikan sistem kelistrikan dan sound system' mendadak gagal dilakukan sebelum acara dimulai. Dampak sistemik paling krusial terhadap elemen lain di BMC adalah...",
+                options: [
+                    "Hancurnya elemen Value Proposition (kualitas acara buruk) yang berujung pada rusaknya elemen Customer Relationships dengan klien",
+                    "Meningkatnya luas tanah kantor pusat agensi secara mendadak",
+                    "Perubahan instan struktur kode hukum pajak negara",
+                    "Elemen target konsumen berubah total dari manusia menjadi komoditas barang"
+                ],
+                correct: 0,
+                rationale: "Kegagalan pada aktivitas inti (Key Activities) berimbas langsung pada hilangnya nilai manfaat produk (Value) dan rusaknya kepercayaan pelanggan."
+            },
+            {
+                id: 44,
+                question: "Sebuah bisnis pelatihan administrasi perkantoran online ingin meluncurkan model bisnis baru berbasis langganan premium. Evaluasi terpenting sebelum peluncuran terkait elemen biaya pemasaran digital adalah...",
+                options: [
+                    "Menghitung rasio Biaya Akuisisi Pelanggan (CAC) dibandingkan dengan Nilai Jangka Panjang Pelanggan (LTV) agar pengeluaran iklan tidak boncos",
+                    "Memastikan semua anggaran promosi habis dibelikan suvenir kaos tanpa sisa",
+                    "Menetapkan alokasi dana pemasaran bernilai nol rupiah selamanya",
+                    "Meminjam modal bank senilai sepuluh kali lipat aset tanpa rencana konversi iklan"
+                ],
+                correct: 0,
+                rationale: "Model bisnis baru harus diuji kelayakan keuangannya dengan memastikan biaya iklan mencari user baru lebih kecil dibanding proyeksi pendapatan dari user tersebut."
+            },
+            {
+                id: 45,
+                question: "Agensi pengetikan dokumen menjalin kemitraan strategis (Key Partnerships) dengan perusahaan manufaktur laptop terkemuka untuk mendapatkan pasokan perangkat kerja dengan sistem sewa-beli murah. Integrasi elemen ini memberikan nilai tambah berupa...",
+                options: [
+                    "Penurunan risiko kegagalan teknis perangkat kerja (karena jaminan servis pabrik resmi) sekaligus menekan pengeluaran modal awal (CapEx)",
+                    "Menghilangkan kewajiban membayar pajak usaha tahunan kepada negara",
+                    "Memaksa karyawan bekerja tanpa diberikan waktu istirahat makan siang",
+                    "Mengubah bidang usaha jasa pengetikan menjadi pabrik peleburan baja besi"
+                ],
+                correct: 0,
+                rationale: "Key Partnership yang baik ditujukan untuk mengoptimalkan skala ekonomi bisnis, mengurangi risiko operasional, dan efisiensi biaya."
+            },
+            {
+                id: 46,
+                question: "Saat melakukan audit stok opname fisik di gudang usaha dagang ATK, ditemukan sejumlah kertas premium yang rusak terkena rembesan air hujan sehingga tidak layak jual. Analisis dampak dari temuan fisik ini terhadap perhitungan Harga Pokok Penjualan (HPP) perusahaan adalah...",
+                options: [
+                    "Nilai persediaan akhir barang dagang menurun, yang secara matematis akan menyebabkan nilai HPP menjadi lebih tinggi pada periode tersebut",
+                    "Nilai persediaan awal otomatis melonjak dua kali lipat secara instan",
+                    "HPP menjadi bernilai nol rupiah karena barang tidak laku terjual",
+                    "Nilai pembelian bersih meningkat secara otomatis tanpa transaksi baru"
+                ],
+                correct: 0,
+                rationale: "Dalam rumus HPP = (Persediaan Awal + Pembelian Bersih) - Persediaan Akhir. Jika nilai persediaan akhir mengecil akibat barang rusak, pengurang menjadi lebih kecil sehingga HPP membengkak."
+            },
+            {
+                id: 47,
+                question: "Akuntan sebuah agensi percetakan dokumen salah mencatat nilai persediaan awal barang dagang menjadi terlalu rendah dari yang seharusnya. Evaluasi dampak kesalahan pencatatan ini terhadap laporan keuangan perusahaan adalah...",
+                options: [
+                    "Perhitungan HPP menjadi terlalu rendah (understated), sehingga menyebabkan sajian laba kotor menjadi terlalu tinggi (overstated) dari kondisi aslinya",
+                    "Nilai pendapatan penjualan tunai di kasir mendadak hangus menghilang",
+                    "Pajak penghasilan yang wajib dibayarkan perusahaan menjadi turun ke angka nol",
+                    "Jumlah utang dagang perusahaan ke supplier otomatis lunas seketika"
+                ],
+                correct: 0,
+                rationale: "Persediaan awal berbanding lurus dengan HPP. Jika persediaan awal dicatat terlalu rendah, HPP ikut rendah. Karena HPP rendah, pengurang penjualan mengecil, memicu fiktifnya nilai tingginya laba kotor."
+            },
+            {
+                id: 48,
+                question: "Perusahaan menetapkan target Harga Pokok Penjualan (HPP) akhir tahun maksimal Rp 40.000.000. Data akuntansi: Persediaan Awal Rp 10.000.000 dan estimasi Persediaan Akhir dirancang sebesar Rp 5.000.000. Berapakah target anggaran Pembelian Bersih yang harus direalisasikan oleh tim purchasing agar semua target keuangan tersebut tercapai?",
+                options: [
+                    "Rp 35.000.000",
+                    "Rp 55.000.000",
+                    "Rp 20.000.000",
+                    "Rp 15.000.000"
+                ],
+                correct: 0,
+                rationale: "Menggunakan rumus: HPP = Persediaan Awal + Pembelian Bersih - Persediaan Akhir -> 40.000.000 = 10.000.000 + Pembelian Bersih - 5.000.000 -> 40.000.000 = 5.000.000 + Pembelian Bersih -> Pembelian Bersih = 35.000.000."
+            },
+            {
+                id: 49,
+                question: "Strategi inovatif yang paling efektif dan etis untuk menekan nilai Harga Pokok Penjualan (HPP) secara signifikan dalam jangka panjang pada bisnis pembuatan produk cinderamata kantor adalah...",
+                options: [
+                    "Membangun kontrak pasokan bahan baku jangka panjang langsung dengan produsen utama (eliminasi makelar) disertai penerapan otomatisasi mesin pemotong hemat daya",
+                    "Menggunakan bahan pewarna kimia beracun ilegal yang harganya jauh lebih murah",
+                    "Memanipulasi timbangan berat produk agar konsumen mendapatkan jumlah lebih sedikit dari deskripsi kemasan",
+                    "Sengaja menunggak pembayaran upah lembur para pekerja pabrik selama satu tahun"
+                ],
+                correct: 0,
+                rationale: "Membangun hubungan langsung dengan produsen utama dan menerapkan otomatisasi mesin hemat energi merupakan langkah legal, etis, dan berkelanjutan."
+            },
+            {
+                id: 50,
+                question: "Terjadi kesalahan fatal berupa pencatatan ganda (double counting) pada nilai persediaan akhir barang dagang ATK (tercatat dua kali lebih besar dari fisik asli). Analisis dampak berantai dari kesalahan ini terhadap perhitungan laporan laba rugi perusahaan adalah...",
+                options: [
+                    "HPP menjadi terlalu rendah secara fiktif, yang berakibat pada pelaporan laba bersih akhir tahun yang melonjak tinggi secara semu (overstated)",
+                    "Nilai beban pajak operasional perusahaan langsung turun ke minus",
+                    "Pendapatan kotor dari omzet penjualan ikut melonjak dua kali lipat otomatis",
+                    "Laba bersih dilaporkan menjadi sangat rendah di bawah nilai nol rupiah"
+                ],
+                correct: 0,
+                rationale: "Persediaan akhir bertindak sebagai pengurang. Jika persediaan akhir tercatat terlalu besar secara fiktif, biaya HPP terhitung mengecil, yang berdampak pada pelaporan Laba Bersih yang terlampau tinggi secara semu."
+            }
+        ];
+
+        // State variables
+        let currentIdx = 0;
+        let answers = Array(questions.length).fill(null); // stores index of selected option
+        let flags = Array(questions.length).fill(false); // flags for unsure questions
+        let timerSeconds = 90 * 60; // 90 minutes
+        let timerInterval = null;
+
+        // Dom Elements
+        const questionIndicator = document.getElementById('question-indicator');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const flagBtn = document.getElementById('flag-btn');
+        const navGrid = document.getElementById('nav-grid');
+        const answeredCountText = document.getElementById('answered-count');
+        const progressBarFill = document.getElementById('progress-bar-fill');
+        const progressPercentageText = document.getElementById('progress-percentage');
+        const timeLeftText = document.getElementById('time-left');
+        const endExamBtn = document.getElementById('end-exam-btn');
+        const confirmModal = document.getElementById('confirm-modal');
+        const cancelSubmitBtn = document.getElementById('cancel-submit');
+        const confirmSubmitBtn = document.getElementById('confirm-submit');
+        const resultModal = document.getElementById('result-modal');
+        const modalScore = document.getElementById('modal-score');
+        const modalCorrect = document.getElementById('modal-correct');
+        const modalWrong = document.getElementById('modal-wrong');
+        const modalSkipped = document.getElementById('modal-skipped');
+        const reviewContainer = document.getElementById('review-container');
+
+        // Initializer
+        window.onload = function() {
+            initNavigationGrid();
+            renderQuestion();
+            startTimer();
+            setupEventListeners();
+        };
+
+        function setupEventListeners() {
+            prevBtn.addEventListener('click', () => {
+                if (currentIdx > 0) {
+                    currentIdx--;
+                    renderQuestion();
+                }
+            });
+
+            nextBtn.addEventListener('click', () => {
+                if (currentIdx < questions.length - 1) {
+                    currentIdx++;
+                    renderQuestion();
+                }
+            });
+
+            flagBtn.addEventListener('click', () => {
+                flags[currentIdx] = !flags[currentIdx];
+                renderQuestion();
+                updateSidebarButton(currentIdx);
+            });
+
+            endExamBtn.addEventListener('click', () => {
+                const uncompletedCount = answers.filter(a => a === null).length;
+                const desc = document.getElementById('confirm-modal-desc');
+                if (uncompletedCount > 0) {
+                    desc.innerHTML = `<span class="text-rose-600 font-semibold">Perhatian!</span> Terdapat <strong>${uncompletedCount} soal</strong> yang belum Anda jawab. Apakah Anda tetap ingin mengirimkan hasil ujian?`;
+                } else {
+                    desc.innerHTML = `Semua soal telah terjawab dengan lengkap. Apakah Anda ingin mengakhiri ujian dan melihat hasil nilai sekarang?`;
+                }
+                confirmModal.classList.remove('hidden');
+            });
+
+            cancelSubmitBtn.addEventListener('click', () => {
+                confirmModal.classList.add('hidden');
+            });
+
+            confirmSubmitBtn.addEventListener('click', () => {
+                confirmModal.classList.add('hidden');
+                calculateResults();
+            });
+        }
+
+        // Build side grid
+        function initNavigationGrid() {
+            navGrid.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const btn = document.createElement('button');
+                btn.id = `nav-btn-${i}`;
+                btn.className = 'w-full aspect-square flex items-center justify-center font-bold text-sm rounded-xl border border-slate-200 transition duration-150 text-slate-600 bg-slate-50 hover:bg-slate-100';
+                btn.innerText = i + 1;
+                btn.addEventListener('click', () => {
+                    currentIdx = i;
+                    renderQuestion();
+                });
+                navGrid.appendChild(btn);
+            }
+        }
+
+        // Render current question
+        function renderQuestion() {
+            const q = questions[currentIdx];
+            questionIndicator.innerText = `Soal Nomor ${currentIdx + 1}`;
+            questionText.innerText = q.question;
+
+            // Flag state button
+            if (flags[currentIdx]) {
+                flagBtn.innerHTML = '<i class="fa-solid fa-bookmark text-amber-500"></i> Lepas Ragu-Ragu';
+                flagBtn.className = "flex items-center justify-center gap-2 border border-amber-300 bg-amber-100 hover:bg-amber-200 text-amber-800 font-semibold px-4 py-2.5 rounded-xl transition duration-150 text-sm";
+            } else {
+                flagBtn.innerHTML = '<i class="fa-regular fa-bookmark"></i> Tandai Ragu';
+                flagBtn.className = "flex items-center justify-center gap-2 border border-amber-200 bg-amber-50/50 hover:bg-amber-50 text-amber-700 font-semibold px-4 py-2.5 rounded-xl transition duration-150 text-sm";
+            }
+
+            // Render option items
+            optionsContainer.innerHTML = '';
+            q.options.forEach((opt, idx) => {
+                const isSelected = answers[currentIdx] === idx;
+                
+                const optBtn = document.createElement('button');
+                optBtn.className = `w-full text-left flex items-center gap-4 px-4.5 py-4 rounded-xl border transition duration-150 ${
+                    isSelected 
+                    ? 'border-indigo-600 bg-indigo-50 text-indigo-900 font-semibold shadow-sm' 
+                    : 'border-slate-200 hover:bg-slate-50 text-slate-700'
+                }`;
+
+                const alphabet = String.fromCharCode(65 + idx); // A, B, C, D
+                optBtn.innerHTML = `
+                    <span class="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold ${
+                        isSelected 
+                        ? 'bg-indigo-600 text-white' 
+                        : 'bg-slate-100 text-slate-500'
+                    }">${alphabet}</span>
+                    <span class="flex-grow text-sm sm:text-base leading-snug">${opt}</span>
+                `;
+
+                optBtn.addEventListener('click', () => {
+                    answers[currentIdx] = idx;
+                    renderQuestion();
+                    updateSidebarButton(currentIdx);
+                    updateProgress();
+                });
+
+                optionsContainer.appendChild(optBtn);
+            });
+
+            // Handle button states
+            prevBtn.disabled = (currentIdx === 0);
+            nextBtn.disabled = (currentIdx === questions.length - 1);
+
+            // Highlight side grid active element
+            for (let i = 0; i < questions.length; i++) {
+                const sideBtn = document.getElementById(`nav-btn-${i}`);
+                if (i === currentIdx) {
+                    sideBtn.classList.add('ring-2', 'ring-indigo-600', 'ring-offset-2');
+                } else {
+                    sideBtn.classList.remove('ring-2', 'ring-indigo-600', 'ring-offset-2');
+                }
+            }
+        }
+
+        // Update button visual on side panel
+        function updateSidebarButton(index) {
+            const btn = document.getElementById(`nav-btn-${index}`);
+            if (flags[index]) {
+                btn.className = 'w-full aspect-square flex items-center justify-center font-bold text-sm rounded-xl border border-amber-300 bg-amber-400 text-white transition duration-150 hover:bg-amber-500';
+            } else if (answers[index] !== null) {
+                btn.className = 'w-full aspect-square flex items-center justify-center font-bold text-sm rounded-xl border border-indigo-600 bg-indigo-600 text-white transition duration-150 hover:bg-indigo-700';
+            } else {
+                btn.className = 'w-full aspect-square flex items-center justify-center font-bold text-sm rounded-xl border border-slate-200 text-slate-600 bg-slate-50 transition duration-150 hover:bg-slate-100';
+            }
+        }
+
+        // Update overall progress bar
+        function updateProgress() {
+            const totalAnswered = answers.filter(a => a !== null).length;
+            answeredCountText.innerText = totalAnswered;
+            const percentage = Math.round((totalAnswered / questions.length) * 100);
+            progressBarFill.style.width = `${percentage}%`;
+            progressPercentageText.innerText = `${percentage}%`;
+        }
+
+        // Timer Controller
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (timerSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    calculateResults();
+                } else {
+                    timerSeconds--;
+                    const minutes = Math.floor(timerSeconds / 60);
+                    const secs = timerSeconds % 60;
+                    timeLeftText.innerText = `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                }
+            }, 1000);
+        }
+
+        // Calculate and Show Results Modal
+        function calculateResults() {
+            clearInterval(timerInterval);
+            let correct = 0;
+            let wrong = 0;
+            let skipped = 0;
+
+            reviewContainer.innerHTML = '';
+
+            questions.forEach((q, idx) => {
+                const userAns = answers[idx];
+                const isCorrect = userAns === q.correct;
+
+                if (userAns === null) {
+                    skipped++;
+                } else if (isCorrect) {
+                    correct++;
+                } else {
+                    wrong++;
+                }
+
+                // Append review card
+                const userAnsText = userAns !== null ? q.options[userAns] : '[Terlewatkan]';
+                const correctAnsText = q.options[q.correct];
+                
+                const reviewCard = document.createElement('div');
+                reviewCard.className = `p-4.5 rounded-2xl border ${isCorrect ? 'bg-emerald-50/40 border-emerald-100' : 'bg-rose-50/40 border-rose-100'}`;
+                
+                const alphabetUser = userAns !== null ? String.fromCharCode(65 + userAns) : '-';
+                const alphabetCorrect = String.fromCharCode(65 + q.correct);
+
+                reviewCard.innerHTML = `
+                    <div class="flex items-center gap-2 mb-2 text-sm font-bold">
+                        <span class="px-2 py-0.5 rounded-md ${isCorrect ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">Nomor ${q.id}</span>
+                        <span class="${isCorrect ? 'text-emerald-700' : 'text-rose-700'}">${isCorrect ? '<i class="fa-solid fa-circle-check"></i> Benar' : '<i class="fa-solid fa-circle-xmark"></i> Salah'}</span>
+                    </div>
+                    <p class="text-sm font-semibold text-slate-800 leading-normal mb-3">${q.question}</p>
+                    <div class="space-y-1.5 text-xs">
+                        <div class="flex items-baseline gap-1">
+                            <span class="text-slate-400 font-semibold w-24">Jawaban Anda:</span>
+                            <span class="text-slate-700 font-semibold flex-grow">[${alphabetUser}] ${userAnsText}</span>
+                        </div>
+                        <div class="flex items-baseline gap-1">
+                            <span class="text-slate-400 font-semibold w-24">Kunci Jawaban:</span>
+                            <span class="text-emerald-700 font-bold flex-grow">[${alphabetCorrect}] ${correctAnsText}</span>
+                        </div>
+                    </div>
+                    <div class="mt-3 pt-3 border-t border-dashed ${isCorrect ? 'border-emerald-100' : 'border-rose-100'}">
+                        <span class="text-xs font-bold text-slate-500 block mb-0.5"><i class="fa-regular fa-comment-dots"></i> Penjelasan:</span>
+                        <p class="text-xs text-slate-600 leading-relaxed">${q.rationale}</p>
+                    </div>
+                `;
+                reviewContainer.appendChild(reviewCard);
+            });
+
+            // Calculate scale 100
+            const finalScore = Math.round((correct / questions.length) * 100);
+            modalScore.innerText = finalScore;
+            modalCorrect.innerText = correct;
+            modalWrong.innerText = wrong;
+            modalSkipped.innerText = skipped;
+
+            // Open Results overlay
+            resultModal.classList.remove('hidden');
+        }
+
+        // Restart State
+        function restartExam() {
+            currentIdx = 0;
+            answers = Array(questions.length).fill(null);
+            flags = Array(questions.length).fill(false);
+            timerSeconds = 90 * 60;
+            
+            resultModal.classList.add('hidden');
+            
+            initNavigationGrid();
+            renderQuestion();
+            updateProgress();
+            startTimer();
+        }
+    </script>
+</body>
+</html>
